@@ -37,7 +37,9 @@ public class TcpClient {
     }
 
     public void sendByOpenedStream(String msg) {
-        if (writer != null) writer.println(msg);
+
+        assert (writer != null);
+        writer.println(msg);
     }
 
     public void closeStream() throws IOException {
