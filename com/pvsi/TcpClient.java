@@ -1,10 +1,8 @@
 package com.pvsi;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
+import java.io.*;
 import java.net.Socket;
+import java.nio.charset.StandardCharsets;
 
 public class TcpClient {
     private Socket socket;
@@ -13,48 +11,42 @@ public class TcpClient {
 
     public TcpClient(Socket socket) {
         this.socket = socket;
+        try {
+            reader = new BufferedReader(new InputStreamReader(socket.getInputStream(), StandardCharsets.UTF_8));
+            writer = new PrintWriter(new OutputStreamWriter(socket.getOutputStream(), StandardCharsets.UTF_8), true);
+        } catch (IOException e) {
+            System.out.println("не удалось подключиться");
+        }
     }
 
     public Socket getSocket() {
         return socket;
     }
-    public void openStream(ChatForm form){
-        new Thread(()->{
+
+    public void openStream(ChatForm form) {
+        new Thread(() -> {
             try {
-                reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
                 String s;
-                while((s=reader.readLine())!=null){
+                while ((s = reader.readLine()) != null) {
                     form.addRecivedMessage(s);
                 }
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }).start();
-        new Thread(()->{
-            try {
-                writer = new PrintWriter(socket.getOutputStream(), true);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }).start();
     }
-    public void sendByOpenedStream(String msg){
-        if(writer!=null) writer.println(msg);
+
+    public void sendByOpenedStream(String msg) {
+        if (writer != null) writer.println(msg);
     }
-    public void closeStream(){
+
+    public void closeStream() throws IOException {
         writer.close();
-    }
-    public void send(String msg) throws IOException {
-        writer = new PrintWriter(socket.getOutputStream(), true);
-        writer.println(msg);
-        writer.close();
+        reader.close();
     }
 
     public String read() throws IOException {
-        reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-        String a =reader.readLine();
-        reader.close();
-        return a;
+        return reader.readLine();
     }
 
 
