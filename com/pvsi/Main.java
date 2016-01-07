@@ -1,12 +1,10 @@
 package com.pvsi;
 
 import javax.swing.*;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
+import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.nio.charset.StandardCharsets;
 
 public class Main {
     static int port = 6666;
@@ -16,7 +14,6 @@ public class Main {
     static ServerSocket serverSocket;
 
     public static void main(String[] args) {
-            System.setProperty("file.encoding","utf-8");
         try {
             serverSocket = new ServerSocket(port);
         } catch (IOException e) {
@@ -26,8 +23,8 @@ public class Main {
             while (true) {
                 try {
                     Socket socket = serverSocket.accept();
-                    BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-                    PrintWriter writer = new PrintWriter(socket.getOutputStream(), true);
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream(), StandardCharsets.UTF_8));
+                    PrintWriter writer = new PrintWriter(new OutputStreamWriter(socket.getOutputStream(), StandardCharsets.UTF_8), true);
                     String q = reader.readLine();
                     boolean accept = askForAccept(socket.getInetAddress().getHostAddress());
                     if (q.equals("hi")) {

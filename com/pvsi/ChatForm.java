@@ -62,16 +62,18 @@ public class ChatForm extends JFrame {
             client.sendByOpenedStream(text);
             addSendedMessage(text);
             textField.setText("");
-            JScrollBar bar = scrollPane.getVerticalScrollBar();
-            bar.setValue(bar.getMaximum());
         }
     }
 
     public void addRecivedMessage(String message) {
         model.addElement("Собеседник:    "+message);
+        JScrollBar bar = scrollPane.getVerticalScrollBar();
+        bar.setValue(bar.getMaximum());
     }
 
     public void addSendedMessage(String message) {
         model.addElement("Вы:   "+message);
+        JScrollBar bar = scrollPane.getVerticalScrollBar();
+        bar.setValue(bar.getMaximum());
     }
 }
